@@ -1,71 +1,66 @@
-// C program for implementation of FCFS
-// scheduling
-#include<stdio.h>
-// Function to find the waiting time for all
-// processes
-void findWaitingTime(int processes[], int n,
-						int bt[], int wt[])
-{
-	// waiting time for first process is 0
-	wt[0] = 0;
+#include <stdio.h>
+#include <stdlib.h>
+#include <string.h>
 
-	// calculating waiting time
-	for (int i = 1; i < n ; i++ )
-		wt[i] = bt[i-1] + wt[i-1] ;
+#include "cpu.h"
+#include "list.h"
+#include "task.h"
+#include "schedulers.h"
+
+struct node *curr = NULL;
+struct node *head = NULL;
+struct node *prev = NULL;
+
+void add(char *name, int priority, int burst) {
+    //if linked list is empty
+    if (head == NULL) {
+        //prevents seg fault
+        head = malloc(sizeof(struct node));
+        prev = malloc(sizeof(struct node));
+
+        //creating task object on the head node 
+        head->task = malloc(sizeof(struct task));
+        head->task->name = name;
+        head->task->priority = priority;
+        head->task->burst = burst;
+
+        //setting up next pointer to an empty node
+        head->next = NULL;
+        
+        //this is now the first node in the linked list
+        prev = head;
+    } 
+    //if something already occupies the linked list
+    else {
+        //prevents seg fault 
+        curr = malloc(sizeof(struct node));    
+
+        //updating the previous pointer to this current node
+        prev->next = curr;
+
+        //same as above, creating task object
+        curr->task = malloc(sizeof(struct task));
+        curr->task->name = name;
+        curr->task->priority = priority;
+        curr->task->burst = burst;
+
+        //setting up next pointer to an empty node
+        curr->next = NULL;    
+        //increment
+        prev = curr;
+    }
 }
 
-// Function to calculate turn around time
-void findTurnAroundTime( int processes[], int n,
-				int bt[], int wt[], int tat[])
-{
-	// calculating turnaround time by adding
-	// bt[i] + wt[i]
-	for (int i = 0; i < n ; i++)
-		tat[i] = bt[i] + wt[i];
+void schedule() {
+    struct node *curr = head;    
+    while (curr != NULL) {
+        run(curr->task, curr->task->burst);  
+        curr = curr->next;    
+    }
 }
 
-//Function to calculate average time
-void findavgTime( int processes[], int n, int bt[])
-{
-	int wt[n], tat[n], total_wt = 0, total_tat = 0;
 
-	//Function to find waiting time of all processes
-	findWaitingTime(processes, n, bt, wt);
 
-	//Function to find turn around time for all processes
-	findTurnAroundTime(processes, n, bt, wt, tat);
 
-	//Display processes along with all details
-	printf("Processes Burst time Waiting time Turn around time\n");
 
-	// Calculate total waiting time and total turn
-	// around time
-	for (int i=0; i<n; i++)
-	{
-		total_wt = total_wt + wt[i];
-		total_tat = total_tat + tat[i];
-		printf(" %d ",(i+1));
-		printf("	 %d ", bt[i] );
-		printf("	 %d",wt[i] );
-		printf("	 %d\n",tat[i] );
-	}
-	int s=(float)total_wt / (float)n;
-	int t=(float)total_tat / (float)n;
-	printf("Average waiting time = %d",s);
-	printf("\n");
-	printf("Average turn around time = %d ",t);
-}
 
-// Driver code
-int main()
-{
-	//process id's
-	int processes[] = { 1, 2, 3};
-	int n = sizeof processes / sizeof processes[0];
-
-	//Burst time of all processes
-	int burst_time[] = {10, 5, 8};
-
-	findavgTime(processes, n, burst_time);
-	return 0;
-}
