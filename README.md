@@ -14,7 +14,31 @@ repo for Assignment 4 - CPU Scheduling
 
 ## Source Files:
 
-###
+### CPU.c
+
+### cpu.h
+
+### driver.c
+
+### list.c
+
+### list.h
+
+### schedulers.h
+
+### task.h
+
+### schedule_fcfs.c
+
+### schedule_sjf.c
+
+### schedule_rr.c
+
+### schedule_priority.c
+
+### schedule_priority_rr.c
+
+### Makefile
 
 ## Known Errors:
 
@@ -22,9 +46,11 @@ repo for Assignment 4 - CPU Scheduling
 
 ## References:
 
+### schedulers folder with source code
+
 ## Instructions:
 
 Change directory into where ever the files are "cd \_\_\_\_"
 Check to make sure the files are there with "ls"
-Compile program with "g++ "
-Run "./"
+Compile the choice of program with "make **_" {fcfs,sjf,rr,priority,priority_rr}
+Run with "./_**" {fcfs,sjf,rr,priority,priority_rr} "\_\_\_" {any text file}
