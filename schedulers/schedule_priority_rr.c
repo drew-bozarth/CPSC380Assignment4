@@ -183,7 +183,7 @@ void schedule() {
                                     ref = ref->next; // ref == NULL after this
                                     curr = beginning;
                                     break;
-                                }	
+                                }
                             }
                         }
                         ref = beginning;
