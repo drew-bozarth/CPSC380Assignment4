@@ -7,9 +7,9 @@
 #include "task.h"
 #include "schedulers.h"
 
-struct node *curr = NULL;
-struct node *head = NULL;
-struct node *prev = NULL;
+struct node * curr = NULL;
+struct node * head = NULL;
+struct node * previous = NULL;
 
 void add(char * name, int priority, int burst) {
   if (head == NULL) {
@@ -21,7 +21,7 @@ void add(char * name, int priority, int burst) {
     head->task->priority = priority;
 
     head->next = NULL;
-    prev = head;
+    previous = head;
   } 
   else {
     curr = malloc(sizeof(struct node));
@@ -30,56 +30,56 @@ void add(char * name, int priority, int burst) {
     curr->task->name = name;
     curr->task->priority = priority;
 
-    if (!(prev->next)) {
-      if ((curr->task->burst == prev->task->burst) || (curr->task->burst > prev->task->burst)) {
-        prev->next = curr;  
+    if (!(previous->next)) {
+      if ((curr->task->burst == previous->task->burst) || (curr->task->burst > previous->task->burst)) {
+        previous->next = curr;  
         curr->next = NULL;
       }
 	  else {
-        curr->next = prev; 	
+        curr->next = previous; 	
         head = curr;
-        prev = curr;	  
+        previous = curr;
       }	   
     }
 	else {  
 	  while (1) {
-        if ((curr ->task ->burst < prev->next->task->burst)) {
-	        if (curr->task->burst > prev->task->burst) {
-                curr->next = prev->next;
-                prev->next = curr ;
-                prev = head; 
+        if ((curr ->task ->burst < previous->next->task->burst)) {
+	        if (curr->task->burst > previous->task->burst) {
+                curr->next = previous->next;
+                previous->next = curr ;
+                previous = head; 
                 break;
             }
-	        else if (curr->task->burst < prev->task->burst) {
+	        else if (curr->task->burst < previous->task->burst) {
                 head = curr;
-                curr->next = prev;
-                prev = head;
+                curr->next = previous;
+                previous = head;
                 break;
 	        }	  
         }
 	  
-        else if (curr->task->burst == prev->next->task->burst) {
-            prev = prev -> next;
-            if (prev->next == NULL) {
+        else if (curr->task->burst == previous->next->task->burst) {
+            previous = previous -> next;
+            if (previous->next == NULL) {
                 curr->next = NULL;
             }
-            else if (curr->task->burst == prev->next->task->burst) {
-                prev = prev -> next ;   
-                curr->next = prev->next;   
+            else if (curr->task->burst == previous->next->task->burst) {
+                previous = previous -> next ;   
+                curr->next = previous->next;   
             }   
             else {
-                curr->next = prev->next;	   
+                curr->next = previous->next;	   
             }     
-            prev->next = curr;  
-            prev = head;		    
+            previous->next = curr;  
+            previous = head;		    
             break;  
         }  
-        else if ((curr->task->burst) > (prev->next->task->burst)) {
-            prev = prev -> next;
-            if (prev->next == NULL) {
-                prev->next = curr;  
+        else if ((curr->task->burst) > (previous->next->task->burst)) {
+            previous = previous -> next;
+            if (previous->next == NULL) {
+                previous->next = curr;  
                 curr->next = NULL;
-                prev = head;
+                previous = head;
                 break;  
             }	     
         }	    

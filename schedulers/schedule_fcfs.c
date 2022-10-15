@@ -7,11 +7,11 @@
 #include "task.h"
 #include "schedulers.h"
 
-struct node *curr = NULL;
-struct node *head = NULL;
-struct node *prev = NULL;
+struct node * curr = NULL;
+struct node * head = NULL;
+struct node * prev = NULL;
 
-void add(char *name, int priority, int burst) {
+void add(char * name, int priority, int burst) {
     //if linked list is empty
     if (head == NULL) {
         //prevents seg fault
