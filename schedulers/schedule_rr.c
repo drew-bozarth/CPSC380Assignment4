@@ -7,152 +7,111 @@
 #include "schedulers.h"
 #include "cpu.h"
 
-struct node * head = NULL;
-struct node * prev = NULL;
-struct node * curr = NULL;
-struct node * test = NULL;
-int num = 0;
+struct node *head = NULL;
+struct node *prev = NULL;
+struct node *currNode = NULL;
 
 void add(char *name, int priority, int burst) {
-    num = num + 1;
     if (head == NULL) {
         head = malloc(sizeof(struct node)) ;
         prev = malloc(sizeof(struct node)) ;
 
-        // set the name of the task 
         head->task = malloc(sizeof(struct task));
         head->task->name = name;
         head->task->burst = burst;
         head->task->priority = priority;
-        // set the next node to be null
         head->next = NULL;
 
         prev = head;
     }	
     else {
-        curr =  malloc(sizeof(struct node));	
-        prev->next = curr;
-        curr->task = malloc(sizeof(struct task));
-        curr->task->name = name;
-        curr->task->burst = burst;
-        curr->task->priority = priority;
-        curr->next = NULL;	
-        prev = curr;
+        currNode =  malloc(sizeof(struct node));	
+        prev->next = currNode;
+        currNode->task = malloc(sizeof(struct task));
+        currNode->task->name = name;
+        currNode->task->burst = burst;
+        currNode->task->priority = priority;
+        currNode->next = NULL;	
+        prev = currNode;
     }
 }
 
-// invoke the scheduler
 void schedule() {
-
-    struct node * current = head;
-    struct node * ref = head;
-    struct node * monitor = NULL;
-    monitor = malloc(sizeof ( struct node) );
-    monitor = head;
+    struct node *currNode = head;
+    struct node *temp = head;
+    struct node *tester = NULL;
+    tester = malloc(sizeof ( struct node) );
+    tester = head;
     int currburst = 0;
-    int totburst = 0;
-    float turnaroundtime = 0;
-    float ResponseTime = 0;
-    float WaitTime = 0;
-    int check = 1;
+    int totalBurst = 0;
 
-    while (ref != NULL) {
-        if (ref->task->burst >= 10) {	
-            currburst = ref->task->burst-10; // set currburst to 10
+    while (temp != NULL) {
+        if (temp->task->burst >= 10) {	
+            currburst = temp->task->burst-10; 
 
-            if (current!=head) {
-                while(monitor!=current) {
-                    if (strcmp(current->task->name ,monitor->task->name) == 0) {	
-                        check = 0;
-                        break;
-                    }
-                    monitor = monitor->next;
+            if (currNode!=head) {
+                while(tester != currNode) {
+                    tester = tester->next;
                 }
-                monitor = head;
+                tester = head;
             }	
 
-            if (ref->task->burst >10 && ref!=head) {
-                if (ref->next !=NULL) {
-                    if (check == 1){
-                        ResponseTime = ResponseTime + totburst;
-                    }
-                }
-            }
+            totalBurst = totalBurst + 10; 
 
-            if (ref->task->burst ==10 ) {
+            temp->task->burst = 10;
 
-                if (check ==1){
-                    ResponseTime = ResponseTime + totburst;
-                }
-                
-            }
-
-            totburst = totburst + 10; // totburst is 60
-            if (ref->task->burst ==10) {    
-                turnaroundtime = totburst +  turnaroundtime; // turnaroundtime = 60
-            }
-
-            ref->task->burst = 10;
-
-            run(ref->task,10);	
+            run(temp->task,10);	
         }
-        else if (ref-> task-> burst  < 10 ) {
+        else if (temp-> task-> burst  < 10 ) {
             currburst = 0;
-            if (check ==1) {
-                ResponseTime = ResponseTime + totburst;
-            }
-            totburst = totburst + ref->task->burst; 
+ 
+            totalBurst = totalBurst + temp->task->burst; 
 
-            turnaroundtime = turnaroundtime + totburst ; 
-
-            run(ref->task,ref->task->burst);	
+            run(temp->task,temp->task->burst);	
         }	
     
         while(1) {	
-            if (current->next !=NULL) { 
-                current = current->next; // current = T4;
-                if (current->next == NULL) { 
+            if (currNode->next !=NULL) { 
+                currNode = currNode->next; 
+                if (currNode->next == NULL) { 
                     if (currburst != 0) {
                         struct node * currnode = malloc(sizeof(struct node));
                         currnode->task = malloc(sizeof(struct task));	
-                        currnode->task->name = ref->task->name ;
+                        currnode->task->name = temp->task->name ;
                         currnode->task->burst = currburst;
-                        currnode->task->priority = ref->task->priority;
-                        ref = ref->next ; // ref points to P2
-                        current->next = currnode;	// P4 points to curr Node P1
-                        currnode->next = NULL; // P4 points to null
-                        current = ref;     // current points to P2
+                        currnode->task->priority = temp->task->priority;
+                        temp = temp->next ; 
+                        currNode->next = currnode;	
+                        currnode->next = NULL; 
+                        currNode = temp;     
 
                         break;	
                     }
                     else if (currburst == 0) {
-                        ref = ref->next;	 // ref points to T3
-                        current = ref; // current points to T3
+                        temp = temp->next;	
+                        currNode = temp; 
                         break;
                     }	
                 }
             }
-            else { // if this is the last element
+            else {
                 if (currburst !=0) {
-                    struct node * curr = malloc(sizeof(struct node));
-                    curr->task = malloc(sizeof(struct task));	
-                    curr->task->name = ref->task->name ;
-                    curr->task->priority = ref->task->priority;
-                    curr->task->burst = currburst;
-                    ref->next = curr;
-                    ref = ref->next;
-                    curr->next = NULL;
-                    current = curr;
+                    struct node *currNode2 = malloc(sizeof(struct node));
+                    currNode2->task = malloc(sizeof(struct task));	
+                    currNode2->task->name = temp->task->name ;
+                    currNode2->task->priority = temp->task->priority;
+                    currNode2->task->burst = currburst;
+                    temp->next = currNode2;
+                    temp = temp->next;
+                    currNode2->next = NULL;
+                    currNode = currNode2;
                 }
                 else {
-                    ref = ref->next;
+                    temp = temp->next;
                 }
                 break;	
             }	
         }
     }
-    WaitTime = turnaroundtime - totburst;
-    printf("The average turnaround time is : %f time units \n" , turnaroundtime/num);  	
-    printf("The average response time is : %f time units \n" , ResponseTime/num);
-    printf("The average Wait time is : %f time units \n" , WaitTime/num);
+
 }

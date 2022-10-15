@@ -13,6 +13,10 @@ repo for Assignment 4 - CPU Scheduling
 ### Assignment 4 - CPU Scheduling
 
 ## Source Files:
+https://www.tutorialspoint.com/c-program-for-fcfs-scheduling  
+https://www.edureka.co/blog/round-robin-scheduling-in-c/  
+https://www.edureka.co/blog/sjf-scheduling-in-c/  
+https://www.thecrazyprogrammer.com/2014/11/c-cpp-program-for-priority-scheduling-algorithm.html  
 
 ###
 
